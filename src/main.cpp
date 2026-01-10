@@ -2,14 +2,17 @@
 #include <string>
 
 int main() {
-  // Flush after every std::cout / std:cerr
-  std::string command;
   
+  std::string command;
+  // Flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
-  std::cout<<"$ ";
-  std::getline(std::cin,command);
-  std::cout<<command<<": command not found\n";
+  while(true) {
+    std::cout<<"$ ";
+    std::getline(std::cin,command);
+    std::cout<<command<<": command not found\n";
+  }
+  
 
 
   return 0;
