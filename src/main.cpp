@@ -3,7 +3,8 @@
 #include "parser.hpp"
 #include "commandselector.hpp"
 
-void HandleBaseCommand(std::string cmdArg, Parser* parser);
+
+void HandleBaseCommand(std::string& cmdArg, Parser* parser);
 
 int main() {
   
@@ -21,7 +22,7 @@ int main() {
   return 0;
 }
 
-void HandleBaseCommand(std::string cmdArg, Parser* parser) {
+void HandleBaseCommand(std::string& cmdArg, Parser* parser) {
   std::string command = parser->GetCommand(cmdArg,' ');
   switch (GetSelectedCommand(command))
   {
@@ -34,8 +35,20 @@ void HandleBaseCommand(std::string cmdArg, Parser* parser) {
     std::cout<<toPrint<<"\n";
     break;
     }
+  case Command::type: {
+    std::string arg = parser->GetFullArgumentString(cmdArg,' ');
+    Command commandType = GetSelectedCommand(arg);
+    if (commandType != Command::unkown){
+      std::cout<<arg<<" is a shell builtin\n";
+      break;
+    }
+    else {
+      std::cout<<arg<<": not found\n";
+    }
+  }
   case Command::unkown:
     std::cout<<command<<": command not found\n";
+    break;
   default:
     break;
   }
