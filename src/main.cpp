@@ -38,13 +38,9 @@ void HandleBaseCommand(std::string& cmdArg, Parser* parser) {
   case Command::type: {
     std::string arg = parser->GetFullArgumentString(cmdArg,' ');
     Command commandType = GetSelectedCommand(arg);
-    if (commandType != Command::unkown){
-      std::cout<<arg<<" is a shell builtin\n";
-      break;
-    }
-    else {
-      std::cout<<arg<<": not found\n";
-    }
+    if (commandType != Command::unkown) std::cout<<arg<<" is a shell builtin\n";
+    else std::cout<<arg<<": not found\n";
+    break;
   }
   case Command::unkown:
     std::cout<<command<<": command not found\n";
