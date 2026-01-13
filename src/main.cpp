@@ -2,6 +2,7 @@
 #include <string>
 #include "parser.hpp"
 #include "commandselector.hpp"
+#include "executer.hpp"
 
 
 void HandleBaseCommand(std::string& cmdArg, Parser* parser);
@@ -39,7 +40,17 @@ void HandleBaseCommand(std::string& cmdArg, Parser* parser) {
     std::string arg = parser->GetFullArgumentString(cmdArg,' ');
     Command commandType = GetSelectedCommand(arg);
     if (commandType != Command::unkown) std::cout<<arg<<" is a shell builtin\n";
-    else std::cout<<arg<<": not found\n";
+    else {
+      Executer* executer = new Executer();
+      std::filesystem::path exePath = executer->FindExe(arg);
+      if (exePath.empty()){
+        std::cout<<arg<<": not found\n";
+      }
+      else {
+        std::cout<<arg<< " is "<< exePath<<"\n";
+      }
+      delete executer;
+    }
     break;
   }
   case Command::unkown:
