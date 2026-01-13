@@ -47,7 +47,7 @@ void HandleBaseCommand(std::string& cmdArg, Parser* parser) {
         std::cout<<arg<<": not found\n";
       }
       else {
-        std::cout<<arg<< " is "<< exePath<<"\n";
+        std::cout<<arg<< " is "<< exePath.string()<<"\n";
       }
       delete executer;
     }
