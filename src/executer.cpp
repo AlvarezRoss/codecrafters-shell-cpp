@@ -37,3 +37,20 @@ std::filesystem::path Executer::FindExe(std::string& name) {
 
     return std::filesystem::path {}; // return empty path.
 }
+
+int Executer::Execute(std::filesystem::path exePath, std::vector<std::string>& args) {
+    std::vector<char*>cstrs;
+    size_t argsLen = args.size();
+    cstrs.reserve(argsLen);
+    for (size_t i = 0; i < argsLen ; i++) {
+        cstrs.emplace_back(const_cast<char*>(args[i].c_str()));
+    }
+    // Forms the proccess and if we are in the child process childId == 0 then execute the new program
+    pid_t childId = fork();
+    if (childId == 0){
+        if (execvp(exePath.c_str(),cstrs.data()) != 0) return 1;
+    }
+
+    return 0;
+    
+}

@@ -2,6 +2,8 @@
 #include <string>
 #include <filesystem>
 #include <vector>
+#include <unistd.h>
+#include <bits/stdc++.h> 
 
 class Executer {
     private:
@@ -12,5 +14,5 @@ class Executer {
     public:
         Executer();
         std::filesystem::path FindExe(std::string& name);
-        void Execute(std::filesystem::path exePath);
+        int Execute(std::filesystem::path exePath, std::vector<std::string>& args);
 };

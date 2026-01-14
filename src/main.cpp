@@ -6,6 +6,8 @@
 
 
 void HandleBaseCommand(std::string& cmdArg, Parser* parser);
+void HandleTypeCommand(std::string& cmdArg, Parser* parser);
+int HandleExecuteCommand(std::string& cmdArg, Parser* parser);
 
 int main() {
   
@@ -37,7 +39,26 @@ void HandleBaseCommand(std::string& cmdArg, Parser* parser) {
     break;
     }
   case Command::type: {
-    std::string arg = parser->GetFullArgumentString(cmdArg,' ');
+    HandleTypeCommand(cmdArg,parser);
+    break;
+  }
+  case Command::unkown: {
+    int ExecuteStatus = HandleExecuteCommand(cmdArg,parser);
+    if(ExecuteStatus != 0) {
+      std::cout<<command<<": command not found\n";
+      std::cout<<ExecuteStatus<<"\n";
+    }
+    break;
+    }
+  default:
+    break;
+  }
+
+  return;
+}
+
+void HandleTypeCommand(std::string& cmdArg, Parser* parser) {
+  std::string arg = parser->GetFullArgumentString(cmdArg,' ');
     Command commandType = GetSelectedCommand(arg);
     if (commandType != Command::unkown) std::cout<<arg<<" is a shell builtin\n";
     else {
@@ -51,14 +72,19 @@ void HandleBaseCommand(std::string& cmdArg, Parser* parser) {
       }
       delete executer;
     }
-    break;
-  }
-  case Command::unkown:
-    std::cout<<command<<": command not found\n";
-    break;
-  default:
-    break;
-  }
+    return;
+}
 
-  return;
+int HandleExecuteCommand(std::string& cmdArg, Parser* parser) {
+  std::vector<std::string>* toks = parser->TokenizeFullCommand(cmdArg,' ');
+  std::string exeName = parser->GetCommand(cmdArg,' ');
+  Executer* executer = new Executer();
+  std::filesystem::path exePath = executer->FindExe(exeName);
+  for(const auto& arg : parser->tokens) {
+    std::cout<<arg<<"\n";
+  }
+  if (exePath.empty()) return 1;
+  if (executer->Execute(exePath,(*toks)) != 0) return 2;
+  delete executer;
+  return 0;
 }
