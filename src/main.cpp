@@ -46,7 +46,6 @@ void HandleBaseCommand(std::string& cmdArg, Parser* parser) {
     int ExecuteStatus = HandleExecuteCommand(cmdArg,parser);
     if(ExecuteStatus != 0) {
       std::cout<<command<<": command not found\n";
-      std::cout<<ExecuteStatus<<"\n";
     }
     break;
     }
@@ -80,9 +79,6 @@ int HandleExecuteCommand(std::string& cmdArg, Parser* parser) {
   std::string exeName = parser->GetCommand(cmdArg,' ');
   Executer* executer = new Executer();
   std::filesystem::path exePath = executer->FindExe(exeName);
-  for(const auto& arg : parser->tokens) {
-    std::cout<<arg<<"\n";
-  }
   if (exePath.empty()) return 1;
   if (executer->Execute(exePath,(*toks)) != 0) return 2;
   delete executer;

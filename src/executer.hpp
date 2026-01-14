@@ -4,6 +4,7 @@
 #include <vector>
 #include <unistd.h>
 #include <bits/stdc++.h> 
+#include <sys/wait.h>
 
 class Executer {
     private:
