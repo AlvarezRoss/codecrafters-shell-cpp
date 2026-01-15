@@ -52,7 +52,7 @@ void HandleBaseCommand(std::string& cmdArg, Parser* parser, Navigator* navigator
   }
   case Command::cd: {
     std::string pathString = parser->GetFullArgumentString(cmdArg,' ');
-    if (navigator->ChangeDir(pathString) != 0) std::cout<<cmdArg<<": No such file or directory\n";
+    if (navigator->ChangeDir(pathString) != 0) std::cout<<"cd: "<<pathString<<": No such file or directory\n";
     break;
   }
   case Command::unkown: {
