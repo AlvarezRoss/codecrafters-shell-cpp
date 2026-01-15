@@ -3,9 +3,10 @@
 #include "parser.hpp"
 #include "commandselector.hpp"
 #include "executer.hpp"
+#include "navigator.hpp"
 
 
-void HandleBaseCommand(std::string& cmdArg, Parser* parser);
+void HandleBaseCommand(std::string& cmdArg, Parser* parser, Navigator* navigator);
 void HandleTypeCommand(std::string& cmdArg, Parser* parser);
 int HandleExecuteCommand(std::string& cmdArg, Parser* parser);
 
@@ -16,21 +17,24 @@ int main() {
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
   Parser* parser = new Parser();
+  Navigator* navigator = new Navigator();
   while(true) {
     std::cout<<"$ ";
     std::getline(std::cin,cmd);
-    HandleBaseCommand(cmd,parser);
+    HandleBaseCommand(cmd,parser,navigator);
   }
   delete parser;
+  delete navigator;
   return 0;
 }
 
-void HandleBaseCommand(std::string& cmdArg, Parser* parser) {
+void HandleBaseCommand(std::string& cmdArg, Parser* parser, Navigator* navigator) {
   std::string command = parser->GetCommand(cmdArg,' ');
   switch (GetSelectedCommand(command))
   {
   case Command::exit:
     delete parser;
+    delete navigator;
     std::exit(0);
     break;
   case Command::echo: {
@@ -43,8 +47,12 @@ void HandleBaseCommand(std::string& cmdArg, Parser* parser) {
     break;
   }
   case Command::pwd: {
-    std::filesystem::path currentPath = std::filesystem::current_path();
-    std::cout<<currentPath.string()<<std::endl;
+    std::cout<<navigator->getWorkingDirectory().string()<<"\n";
+    break;
+  }
+  case Command::cd: {
+    std::string pathString = parser->GetFullArgumentString(cmdArg,' ');
+    if (navigator->ChangeDir(pathString) != 0) std::cout<<"cd: "<<cmdArg<<": No such file or directory\n";
     break;
   }
   case Command::unkown: {
