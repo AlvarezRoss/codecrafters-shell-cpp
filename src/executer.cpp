@@ -45,7 +45,7 @@ int Executer::Execute(std::filesystem::path exePath, std::vector<std::string>& a
     for (size_t i = 0; i < argsLen ; i++) {
         cstrs.emplace_back(const_cast<char*>(args[i].c_str()));
     }
-    cstrs.emplace_back(nullptr);
+    cstrs.emplace_back(nullptr);// execvp expects last argv to be NULL
     // Forms the proccess and if we are in the child process childId == 0 then execute the new program
     pid_t id = fork();
     if (id == 0){

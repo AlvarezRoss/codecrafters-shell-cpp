@@ -9,13 +9,15 @@ enum class Command {
     exit,
     echo,
     type,
+    pwd,
     unkown
 };
 
-constexpr std::array<std::pair<std::string_view,Command>,3> commandTable {{
+constexpr std::array<std::pair<std::string_view,Command>,4> commandTable {{
     {"exit",Command::exit},
     {"echo",Command::echo},
-    {"type",Command::type}
+    {"type",Command::type},
+    {"pwd",Command::pwd}
 }
 };
 

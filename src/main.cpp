@@ -42,6 +42,11 @@ void HandleBaseCommand(std::string& cmdArg, Parser* parser) {
     HandleTypeCommand(cmdArg,parser);
     break;
   }
+  case Command::pwd: {
+    std::filesystem::path currentPath = std::filesystem::current_path();
+    std::cout<<currentPath.string()<<std::endl;
+    break;
+  }
   case Command::unkown: {
     int ExecuteStatus = HandleExecuteCommand(cmdArg,parser);
     if(ExecuteStatus != 0) {
