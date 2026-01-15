@@ -5,5 +5,6 @@
 class Navigator {
     public:
         std::filesystem::path getWorkingDirectory();
+        int setPathToHomeDirectory();
         int ChangeDir(std::string& path);
 };
