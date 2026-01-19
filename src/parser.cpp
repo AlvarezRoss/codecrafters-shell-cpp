@@ -35,7 +35,7 @@ std::vector<std::string>* Parser::TokenizeFullCommand(std::string& command,char 
             for (int g = begin; g < argLen; g++) {
                 if (command[g] == '\'') {
                     std::string_view quotedCommand = std::string_view(command.data() + begin, g - begin);
-                    if (quotedCommand.find_first_not_of(' ')){
+                    if (quotedCommand.find_first_not_of(' ') != std::string::npos){
                          tokens.emplace_back(quotedCommand);
                         i = g+1;
                         begin = i;
