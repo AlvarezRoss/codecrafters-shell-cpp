@@ -30,6 +30,7 @@ int main() {
 
 void HandleBaseCommand(std::string& cmdArg, Parser* parser, Navigator* navigator) {
   std::string command = parser->GetCommand(cmdArg,' ');
+  std::string argString = parser->GetFullArgumentString(cmdArg,' ');
   switch (GetSelectedCommand(command))
   {
   case Command::exit:
@@ -38,8 +39,11 @@ void HandleBaseCommand(std::string& cmdArg, Parser* parser, Navigator* navigator
     std::exit(0);
     break;
   case Command::echo: {
-    std::string toPrint = parser->GetFullArgumentString(cmdArg,' ');
-    std::cout<<toPrint<<"\n";
+    //std::string toPrint = parser->GetFullArgumentString(cmdArg,' ');
+    //std::cout<<toPrint<<"\n";
+    std::vector<std::string>* toPirnt = parser->TokenizeFullCommand(argString,' ');
+    for (const auto& element : (*toPirnt)) std::cout<<element;
+    std::cout<<std::endl;
     break;
     }
   case Command::type: {

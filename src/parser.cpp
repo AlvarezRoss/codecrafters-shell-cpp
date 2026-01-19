@@ -1,5 +1,5 @@
 #include "parser.hpp"
-
+#include <iostream>
 
 Parser::Parser() {
     tokens.reserve(5);
@@ -24,11 +24,39 @@ std::vector<std::string>* Parser::TokenizeFullCommand(std::string& command,char 
     size_t begin = 0;
     int argLen = command.length();
     for (int i = 0; i <= argLen; i++){
-        if (command[i] == ' ' || i == argLen){
-            std::string_view arg = command.substr(begin,i - begin);
-            tokens.emplace_back(arg);
-            begin = i + 1;
+        if (command[i] == '\'') {
+            if (command[i+1] == '\''){
+                std::string_view wordBeforeQuote = std::string_view(command.data() + begin, i - begin);
+                tokens.emplace_back(wordBeforeQuote);
+                begin = i + 1;
+                continue;
+            }
+            begin = i+1;
+            for (int g = begin; g < argLen; g++) {
+                if (command[g] == '\'') {
+                    std::string_view quotedCommand = std::string_view(command.data() + begin, g - begin);
+                    tokens.emplace_back(quotedCommand);
+                    i = g+1;
+                    begin = i;
+                }
+            }
+        }
+        if (command[i] == delimiter|| i == argLen){
+            if (command[i-1] != delimiter) {
+                std::string_view arg = std::string_view(command.data() + begin, i-begin);
+                tokens.emplace_back(arg);
+                if (i + 1 < argLen) {
+                    std::string_view spaceChar = std::string_view(command.data() + i, 1);
+                    tokens.emplace_back(spaceChar);
+                }
+                begin = i + 1;
+            }
+            else {
+                begin++;
+                continue;
+            }           
         }
     }
     return &tokens;
 }
+
