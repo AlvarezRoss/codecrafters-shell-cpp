@@ -43,7 +43,9 @@ int Executer::Execute(std::filesystem::path exePath, std::vector<std::string>& a
     size_t argsLen = args.size();
     cstrs.reserve(argsLen);
     for (size_t i = 0; i < argsLen ; i++) {
-        cstrs.emplace_back(const_cast<char*>(args[i].c_str()));
+        if(args[i].find_first_not_of(' ') != std::string::npos){ //ignores empty arguments
+            cstrs.emplace_back(const_cast<char*>(args[i].c_str()));
+        }        
     }
     cstrs.emplace_back(nullptr);// execvp expects last argv to be NULL
     // Forms the proccess and if we are in the child process childId == 0 then execute the new program
