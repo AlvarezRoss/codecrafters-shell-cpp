@@ -42,7 +42,7 @@ void HandleBaseCommand(std::string& cmdArg, Parser* parser, Navigator* navigator
     //std::string toPrint = parser->GetFullArgumentString(cmdArg,' ');
     //std::cout<<toPrint<<"\n";
     std::vector<std::string>* toPirnt = parser->TokenizeFullCommand(argString,' ');
-    for (const auto& element : (*toPirnt)) std::cout<<element;
+    for (const auto& element : (*toPirnt)) std::cout<<element<<" ";
     std::cout<<std::endl;
     break;
     }
