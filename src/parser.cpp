@@ -22,8 +22,8 @@ std::vector<std::string>* Parser::TokenizeFullCommand(std::string& command,char 
     if (tokens.size() > 0) tokens.clear();
     bool inSingleQuotes = false;
     bool inDoubleQuotes = false;
-    std::string tok = "";
-    tok.reserve(20);
+    std::string word = ""; // strings used to append chars when not inside quotes
+    word.reserve(50);
     size_t begin = 0;
     int argLen = command.length();
     for (int i = 0; i <= argLen; i++){
@@ -36,12 +36,20 @@ std::vector<std::string>* Parser::TokenizeFullCommand(std::string& command,char 
             if (inSingleQuotes){
                 std::string tok = std::string(command.data() + begin, i - begin);
                 tok.erase(std::remove(tok.begin(),tok.end(),'\''),tok.end());
-                tokens.emplace_back(tok);
+                if (word != "") {
+                    word.append(tok);
+                    tokens.emplace_back(word);
+                    word = "";
+                }
+                else {
+                    tokens.emplace_back(tok);
+                    word = "";
+                }
             }
             begin = i + 1;
             inSingleQuotes = !inSingleQuotes;
         }
-        if (command[i] == '\"') {
+        if (command[i] == '\"' && !inSingleQuotes) {
             if (command[i+1] == '\"'){
                 i++;
                 continue;
@@ -49,7 +57,14 @@ std::vector<std::string>* Parser::TokenizeFullCommand(std::string& command,char 
             if (inDoubleQuotes) {
                 std::string tok = std::string(command.data() + begin, i - begin);
                 tok.erase(std::remove(tok.begin(),tok.end(),'\"'), tok.end());
-                tokens.emplace_back(tok);
+                if (word != "") {
+                    word.append(tok);
+                    tokens.emplace_back(word);
+                }
+                else {
+                    tokens.emplace_back(tok);
+                }
+                
             }
             begin = i + 1;
             
@@ -58,36 +73,37 @@ std::vector<std::string>* Parser::TokenizeFullCommand(std::string& command,char 
         if (!inDoubleQuotes && !inSingleQuotes) {
                 
                 if (command[i] == delimiter || i >= argLen) {
+                    //Adds whole string to vector if a delimiter is reached
                     if (command[i - 1] == delimiter || command[i - 1] == '\'' || command[i - 1] == '\"'){
                         begin = i + 1;
                         continue;
                     }
-                    if (tok.find_first_not_of(' ') != std::string::npos) {
-                        tokens.emplace_back(tok);
-                        tok = "";
+                    if (word.find_first_not_of(' ') != std::string::npos) {
+                        tokens.emplace_back(word);
+                        word = "";
                         begin = i+1;
                     }
                     
                 }
                 if (command[i] == '\\') {
-                    tok.append(1,command[i+1]);
+                    word.append(1,command[i+1]);
                     if (i+2 >= argLen){
-                        tokens.emplace_back(tok);
-                        tok = "";
+                        tokens.emplace_back(word);
+                        word = "";
                         begin = i+1;
                     }
                     else {
                         i++;
-                        begin = i+1;
+                        //begin = i+1;
                     }
                     continue;
                 } 
                 else if (command[i] != ' ' && command[i] != '\"' && command[i] != '\''){
-                    tok.append(1,command[i]);
-                    begin = i+1;
+                    word.append(1,command[i]);
+                    //begin = i+1;
                     continue;
                 } 
-            begin = i+1;
+            //begin = i+1;
                 
         }
 
