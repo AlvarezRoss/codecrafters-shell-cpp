@@ -22,13 +22,15 @@ std::vector<std::string>* Parser::TokenizeFullCommand(std::string& command,char 
     if (tokens.size() > 0) tokens.clear();
     bool inSingleQuotes = false;
     bool inDoubleQuotes = false;
+    std::string tok = "";
+    tok.reserve(20);
     size_t begin = 0;
     int argLen = command.length();
     for (int i = 0; i <= argLen; i++){
         
         if (command[i] == '\'' && !inDoubleQuotes) {
             if (command[i+1] == '\'') {
-                i = i + 2;
+                i++;
                 continue;
             }   
             if (inSingleQuotes){
@@ -41,7 +43,7 @@ std::vector<std::string>* Parser::TokenizeFullCommand(std::string& command,char 
         }
         if (command[i] == '\"') {
             if (command[i+1] == '\"'){
-                i = i +2;
+                i++;
                 continue;
             }
             if (inDoubleQuotes) {
@@ -54,20 +56,38 @@ std::vector<std::string>* Parser::TokenizeFullCommand(std::string& command,char 
             inDoubleQuotes = !inDoubleQuotes;
         }
         if (!inDoubleQuotes && !inSingleQuotes) {
-                if (command[i] == delimiter || i == argLen) {
+                
+                if (command[i] == delimiter || i >= argLen) {
                     if (command[i - 1] == delimiter || command[i - 1] == '\'' || command[i - 1] == '\"'){
                         begin = i + 1;
                         continue;
                     }
-                    std::string tok = std::string(command.data() + begin, i - begin);
                     if (tok.find_first_not_of(' ') != std::string::npos) {
-                        tok.erase(std::remove(tok.begin(),tok.end(),'\''),tok.end());
-                        tok.erase(std::remove(tok.begin(),tok.end(),'\"'),tok.end());
                         tokens.emplace_back(tok);
+                        tok = "";
                         begin = i+1;
                     }
                     
+                }
+                if (command[i] == '\\') {
+                    tok.append(1,command[i+1]);
+                    if (i+2 >= argLen){
+                        tokens.emplace_back(tok);
+                        tok = "";
+                        begin = i+1;
+                    }
+                    else {
+                        i++;
+                        begin = i+1;
+                    }
+                    continue;
                 } 
+                else if (command[i] != ' ' && command[i] != '\"' && command[i] != '\''){
+                    tok.append(1,command[i]);
+                    begin = i+1;
+                    continue;
+                } 
+            begin = i+1;
                 
         }
 
