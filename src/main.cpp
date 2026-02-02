@@ -93,9 +93,8 @@ void HandleTypeCommand(std::string& cmdArg, Parser* parser) {
 
 int HandleExecuteCommand(std::string& cmdArg, Parser* parser) {
   std::vector<std::string>* toks = parser->TokenizeFullCommand(cmdArg,' ');
-  std::string exeName = parser->GetCommand(cmdArg,' ');
   Executer* executer = new Executer();
-  std::filesystem::path exePath = executer->FindExe(exeName);
+  std::filesystem::path exePath = executer->FindExe((*toks)[0]);
   if (exePath.empty()) return 1;
   if (executer->Execute(exePath,(*toks)) != 0) return 2;
   delete executer;

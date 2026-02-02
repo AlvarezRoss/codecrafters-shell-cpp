@@ -71,6 +71,8 @@ std::vector<std::string>* Parser::TokenizeFullCommand(std::string& command,char 
                             word.append(1,command[i+1]);
                             i++;
                             continue;
+                        } else {
+                            word.append(1, command[i]);
                         }
                     }
                 else{
